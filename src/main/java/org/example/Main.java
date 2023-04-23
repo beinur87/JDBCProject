@@ -1,6 +1,11 @@
 package org.example;
 
 import com.mysql.cj.jdbc.MysqlDataSource;
+import org.example.dao.AnimalDao;
+import org.example.dao.AnimalDaoImpl;
+import org.example.dao.FoodDao;
+import org.example.dao.FoodImpl;
+import org.example.model.Food;
 
 import java.sql.*;
 import java.util.logging.Level;
@@ -32,9 +37,13 @@ public class Main {
 
             // statement <- folosim pentru a trimite comenzi sql la serverul de Baze de Date
             Statement statement = connection.createStatement();
-
-
             LOGGER.info("Create table animals was successful");
+
+            AnimalDao animaldao = new AnimalDaoImpl(connection);
+            animaldao.createtable();
+            FoodDao fooddao = new FoodImpl(connection);
+            fooddao.createtable();
+
 
             // putem sa refolosim obiectul statement pentru a trimite alte instructiuni sql către baza de date
             statement.execute("insert into animals (name, species) values (\"Lucky\", \"Dog\")");
@@ -44,13 +53,7 @@ public class Main {
             statement.execute("update animals set name = \"Bubu\" where id = 2");
 
 
-            statement.execute("create table food (" +
-                    "id integer auto_increment, " +
-                    "name varchar(100), " +
-                    "description varchar(100)," +
-                    "calories_per_100 integer, " +
-                    "expiration_date date, " +
-                    "primary key (id) )");
+
 
             PreparedStatement preparedStatement = connection.prepareStatement(
                     "insert into food (name, description, calories_per_100, expiration_date) values (?, ?, ?, ?)");
@@ -93,8 +96,9 @@ public class Main {
                         + rs.getInt(4) + "kcal per 100g - "
                         + "expiră la data " + rs.getDate(5));
             }
-            //statement.execute("drop table animals");
-            //statement.execute("drop table food");
+            animaldao.dropTable();
+            fooddao.dropTable();
+            LOGGER.info("Tables dropped successfully");
 
         } catch (SQLException sqlException) {
             LOGGER.log(Level.SEVERE, sqlException.getMessage());
