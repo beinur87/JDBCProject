@@ -33,7 +33,7 @@ public class Main {
             // statement <- folosim pentru a trimite comenzi sql la serverul de Baze de Date
             Statement statement = connection.createStatement();
 
-            statement.execute("create table if not exists animals (id integer not null auto_increment, name varchar(100), species varchar(100), primary key (id))");
+
             LOGGER.info("Create table animals was successful");
 
             // putem sa refolosim obiectul statement pentru a trimite alte instructiuni sql către baza de date
