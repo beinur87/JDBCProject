@@ -1,5 +1,7 @@
 package org.example.dao;
 
+import org.example.model.Animal;
+
 import java.sql.SQLException;
 
 //Animal data access object clasa pentru a accesa date din animals
@@ -8,8 +10,9 @@ import java.sql.SQLException;
 public interface AnimalDao {
 
     //create table
-    void createtable() throws SQLException;
+    void createTable() throws SQLException;
     //adaugare date         CREATE animals
+    void create(Animal animal) throws SQLException;
 
     //gasire date           READ animals
     //modificare date       UPDATE animals

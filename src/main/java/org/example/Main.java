@@ -5,6 +5,7 @@ import org.example.dao.AnimalDao;
 import org.example.dao.AnimalDaoImpl;
 import org.example.dao.FoodDao;
 import org.example.dao.FoodImpl;
+import org.example.model.Animal;
 import org.example.model.Food;
 
 import java.sql.*;
@@ -37,41 +38,24 @@ public class Main {
 
             // statement <- folosim pentru a trimite comenzi sql la serverul de Baze de Date
             Statement statement = connection.createStatement();
-            LOGGER.info("Create table animals was successful");
 
+            LOGGER.info("Creating tables");
             AnimalDao animaldao = new AnimalDaoImpl(connection);
-            animaldao.createtable();
+            animaldao.createTable();
             FoodDao fooddao = new FoodImpl(connection);
             fooddao.createtable();
+            LOGGER.info("Tables have been created");
 
+            animaldao.create(new Animal(null,"Lucky","dog"));
+            animaldao.create(new Animal(null,"Rex","dog"));
+            animaldao.create(new Animal(null,"Goldie","dog"));
 
-            // putem sa refolosim obiectul statement pentru a trimite alte instructiuni sql către baza de date
-            statement.execute("insert into animals (name, species) values (\"Lucky\", \"Dog\")");
-            statement.execute("insert into animals (name, species) values (\"Lucky\", \"Dog\")");
             LOGGER.info("Data insertion was successful");
 
             statement.execute("update animals set name = \"Bubu\" where id = 2");
 
-
-
-
-            PreparedStatement preparedStatement = connection.prepareStatement(
-                    "insert into food (name, description, calories_per_100, expiration_date) values (?, ?, ?, ?)");
-            preparedStatement.setString(1, "ciocolată");
-            preparedStatement.setString(2, "ciocolată de casă");
-            preparedStatement.setInt(3, 550);
-            Date expirationDate = Date.valueOf("2024-10-12");
-            preparedStatement.setDate(4, expirationDate);
-            // întotdeauna trebuie rulat .execute() dacă vrem să fie executat codul sql pe baza de date
-            // comanda care trimite instrucțiunile sql către server (instrucțiunile pregătite mai sus)
-            preparedStatement.execute();
-
-
-            preparedStatement.setString(1, "alune");
-            preparedStatement.setString(2, "pungă de 500g de alune prajite");
-            preparedStatement.setInt(3, 600);
-            preparedStatement.setDate(4, expirationDate);
-            preparedStatement.execute();
+            fooddao.create(new Food(null,"ciocolată","ciocolată de casă",550,Date.valueOf("2024-10-12")));
+            fooddao.create(new Food(null,"alune","pungă de 500g de alune prajite",600,Date.valueOf("2026-5-23")));
 
 
             ResultSet rs = statement.executeQuery("SELECT * FROM animals");
